@@ -1,0 +1,67 @@
+Research
+
+  Shape extraction
+  https://hal.archives-ouvertes.fr/hal-00446037/file/ARS-Journal-SurveyPatternRecognition.pdf
+
+  Multi dimensional time series (r, g, b)
+  https://www.cs.ucr.edu/~eamonn/Motif_Discovery_ICDM.pdf
+
+Data
+  https://www.kaggle.com/jessicali9530/stanford-dogs-dataset
+  https://www.kaggle.com/ma7555/cat-breeds-dataset
+
+Libraries
+  skimage
+    Image processing
+  pyts (BOSS, kNN)
+    TS learning
+  numpy
+    data sructures
+  matplotlib
+    plots
+
+Data cleaning
+  Same dimensions
+  80 x 80 = 6400 px * 3 channels = 19.2 kb
+  50 x 50 = 2500 px              = 07.5 kb
+  64 x 64 = 4096 px              = 12.2 kb
+
+Approach 1 (A1)
+  Row wise concatenation grayscale
+
+Approach 2 (A2)
+  Image processing
+    Extract features (Lines, colors, etc)
+    Filters (Sharpen, blur)
+  3 series (1 for each color channel) for 1 sample
+  Color histograms
+
+Approach 3 (A3)
+  Shape signature
+
+  Localized signature
+    This "sweeps" the image in a regular fashion
+      Spiral - Hyperparams (revolution radius delta, samples per revolution)
+      Star - Hyperparams (max radius, # of points)
+
+    Each sweep sample has (r, g, b)
+
+  Localized texture signature
+    Localized signature on sobel filtered image (grayscale)
+
+  Localized color signature
+    Localized signature on (r, g, b)
+
+  
+
+  
+
+  Convolution
+
+Evaluation
+  Compare against approach 1
+  Compare against random
+  Compare against state of the art (Alex net)
+
+Deliver
+  ROC and metrics for all 6 combos
