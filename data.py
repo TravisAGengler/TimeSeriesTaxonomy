@@ -12,9 +12,14 @@ from typing import List, Tuple
 from enum import Enum
 from xml.etree import ElementTree
 from skimage import io, img_as_ubyte
+from skimage.color import rgb2gray
 from skimage.transform import resize
 
 from data_types import Path, Label, Species, Breed, BoundingBox, OrigDataset, Dataset
+
+from a1 import a1
+
+LABELS_FILENAME = "labels.pkl"
 
 class Command(Enum):
   preprocess = 1
@@ -182,12 +187,32 @@ def data_preprocess(in_dir, out_dir):
   print(f"Found {len(orig_data.cat_breeds)} cat samples")
   print(f"Found {len(orig_data.dog_breeds)} dog samples")
   new_data, n_cat, n_dog = preprocess_orig(orig_data, out_dir)
-  dataset_out_path = os.path.join(out_dir, "labels.pkl")
+  dataset_out_path = os.path.join(out_dir, LABELS_FILENAME)
   new_data.to_pickle(dataset_out_path)
   print(f"Finished preprocessing {n_cat} cat samples and {n_dog} dog samples, labels written to {dataset_out_path}")
 
 def data_a1(in_dir: Path, out_dir: Path):
   print(f"Performing data_a1('{in_dir}','{out_dir}')")
+  dataset_path = os.path.join(in_dir, LABELS_FILENAME)
+  data = pd.read_pickle(dataset_path)
+  print(f"Processing {data.shape[0]} samples")
+
+  if not os.path.exists(out_dir):
+    os.makedirs(out_dir)
+
+  for idx, row in data.iterrows():
+    if idx % 1000 == 0:
+      print(f"Working on sample {idx}")
+    img = row["img"]
+    species = row["species"]
+    breed = row["breed"]
+    img_path = os.path.join(in_dir, f"{img}.png")
+    img_data = io.imread(img_path)
+    a1_data = a1(img_data)
+    out_path = os.path.join(out_dir, f"{img}.npy")
+    np.save(out_path, a1_data)
+  print(f"Finished processing samples. Results written to {out_dir}")
+
 
 def data_a2(in_dir: Path, out_dir: Path):
   print(f"Performing data_a2('{in_dir}','{out_dir}')")
