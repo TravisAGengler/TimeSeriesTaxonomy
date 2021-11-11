@@ -18,6 +18,7 @@ from skimage.transform import resize
 from data_types import Path, Label, Species, Breed, BoundingBox, OrigDataset, Dataset
 
 from a1 import a1
+from a2 import a2 
 
 LABELS_FILENAME = "labels.pkl"
 
@@ -194,6 +195,7 @@ def data_preprocess(in_dir, out_dir):
 def data_a1(in_dir: Path, out_dir: Path):
   print(f"Performing data_a1('{in_dir}','{out_dir}')")
   dataset_path = os.path.join(in_dir, LABELS_FILENAME)
+  dataset_out_path = os.path.join(out_dir, LABELS_FILENAME)
   data = pd.read_pickle(dataset_path)
   print(f"Processing {data.shape[0]} samples")
 
@@ -211,11 +213,38 @@ def data_a1(in_dir: Path, out_dir: Path):
     a1_data = a1(img_data)
     out_path = os.path.join(out_dir, f"{img}.npy")
     np.save(out_path, a1_data)
-  print(f"Finished processing samples. Results written to {out_dir}")
 
+  data.to_pickle(dataset_out_path)
+  print(f"Finished processing samples. Results written to {out_dir}")
 
 def data_a2(in_dir: Path, out_dir: Path):
   print(f"Performing data_a2('{in_dir}','{out_dir}')")
+  dataset_path = os.path.join(in_dir, LABELS_FILENAME)
+  dataset_out_path = os.path.join(out_dir, LABELS_FILENAME)
+  data = pd.read_pickle(dataset_path)
+  print(f"Processing {data.shape[0]} samples")
+
+  if not os.path.exists(out_dir):
+    os.makedirs(out_dir)
+
+  for idx, row in data.iterrows():
+    if idx % 1000 == 0:
+      print(f"Working on sample {idx}")
+    img = row["img"]
+    species = row["species"]
+    breed = row["breed"]
+    img_path = os.path.join(in_dir, f"{img}.png")
+    img_data = io.imread(img_path)
+    a2_data_r, a2_data_g, a2_data_b = a2(img_data)
+    out_path_r = os.path.join(out_dir, f"{img}_r.npy")
+    out_path_g = os.path.join(out_dir, f"{img}_g.npy")
+    out_path_b = os.path.join(out_dir, f"{img}_b.npy")
+    np.save(out_path_r, a2_data_r)
+    np.save(out_path_g, a2_data_g)
+    np.save(out_path_b, a2_data_b)
+
+  data.to_pickle(dataset_out_path)
+  print(f"Finished processing samples. Results written to {out_dir}")
 
 def data_a3(in_dir: Path, out_dir: Path):
   print(f"Performing data_a3('{in_dir}','{out_dir}')")

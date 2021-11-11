@@ -52,10 +52,6 @@ Approach 3 (A3)
   Localized color signature
     Localized signature on (r, g, b)
 
-  
-
-  
-
   Convolution
 
 Evaluation
