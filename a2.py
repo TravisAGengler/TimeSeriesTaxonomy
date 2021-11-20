@@ -28,4 +28,4 @@ def a2(img_data):
   r = to_histogram(adapt[:,:,0])
   g = to_histogram(adapt[:,:,1])
   b = to_histogram(adapt[:,:,2])
-  return r, g, b
+  return np.concatenate((r.astype("float32"), g.astype("float32"), b.astype("float32")))

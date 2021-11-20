@@ -11,4 +11,4 @@ def a1(img_data):
     o = grayscale.shape[1]*r
     for c in range(grayscale.shape[1]):
       a1_data[o + c] = grayscale[r,c]
-  return a1_data
+  return a1_data.astype("float32")

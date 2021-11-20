@@ -1,5 +1,6 @@
 __pycache__/
 .env/
+.ipynb_checkpoints/
 .vscode/
 data/
 doc/
