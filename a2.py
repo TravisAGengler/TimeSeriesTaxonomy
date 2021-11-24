@@ -4,9 +4,6 @@ import numpy as np
 
 from skimage import exposure, filters, color, io
 
-from skimage import data
-from matplotlib import pyplot as plt
-
 def adaptive_equalization(img_data):
   img_hsv = color.convert_colorspace(img_data, "rgb", "hsv")
   img_adapteq = exposure.equalize_adapthist(img_hsv, clip_limit=0.02)

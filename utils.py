@@ -153,45 +153,76 @@ def run_bossvs(train_x, train_y, test_x, test_y, args):
   return run_model(train_x, train_y, test_x, test_y, boss)
 
 def run_classifiers_on_dataset(dataset):
-  # TODO: Maybe do some optimization of these params
-  knn_args = { "metric": "euclidean", "n_neighbors" : 1 }
-  bossvs_args = { "word_size": 2, "window_size": 16 }
+  knn_args = [
+    { "metric": "euclidean", "n_neighbors" : 1 },
+    { "metric": "euclidean", "n_neighbors" : 3 },
+    { "metric": "euclidean", "n_neighbors" : 5 }
+  ]
+  bossvs_args = [
+    { "word_size": 2, "window_size": 16 },
+    { "word_size": 4, "window_size": 8 },
+    { "word_size": 8, "window_size": 32 },
+  ]
 
-  print("Starting run: Species KNN")
-  knn_species_metrics = run_knn(
-    dataset["train_samples_species"],
-    dataset["train_labels_species"],
-    dataset["test_samples_species"],
-    dataset["test_labels_species"],
-    knn_args
-  )
+  knn_species_metrics = []
+  for args in knn_args:
+    print(f"Starting run: Species KNN with args {args}")
+    metrics = run_knn(
+      dataset["train_samples_species"],
+      dataset["train_labels_species"],
+      dataset["test_samples_species"],
+      dataset["test_labels_species"],
+      args
+    )
+    knn_species_metrics.append({
+      "metrics": metrics,
+      "hyper_params": args
+    })
 
-  print("Starting run: Breed KNN")
-  knn_breed_metrics = run_knn(
-    dataset["train_samples_breed"],
-    dataset["train_labels_breed"],
-    dataset["test_samples_breed"],
-    dataset["test_labels_breed"],
-    knn_args
-  )
+  knn_breed_metrics = []
+  for args in knn_args:
+    print(f"Starting run: Breed KNN with args {args}")
+    metrics = run_knn(
+      dataset["train_samples_breed"],
+      dataset["train_labels_breed"],
+      dataset["test_samples_breed"],
+      dataset["test_labels_breed"],
+      args
+    )
+    knn_breed_metrics.append({
+      "metrics": metrics,
+      "hyper_params": args
+    })
   
-  print("Starting run: Species BOSSVS")
-  boss_species_metrics = run_bossvs(
-    dataset["train_samples_species"],
-    dataset["train_labels_species"],
-    dataset["test_samples_species"],
-    dataset["test_labels_species"],
-    bossvs_args
-  )
+  boss_species_metrics = []
+  for args in bossvs_args:
+    print(f"Starting run: Species BOSSVS with args {args}")
+    metrics = run_bossvs(
+      dataset["train_samples_species"],
+      dataset["train_labels_species"],
+      dataset["test_samples_species"],
+      dataset["test_labels_species"],
+      args
+    )
+    boss_species_metrics.append({
+      "metrics": metrics,
+      "hyper_params": args
+    })
 
-  print("Starting run: Breed BOSSVS")
-  boss_breed_metrics = run_bossvs(
-    dataset["train_samples_breed"],
-    dataset["train_labels_breed"],
-    dataset["test_samples_breed"],
-    dataset["test_labels_breed"],
-    bossvs_args
-  )
+  boss_breed_metrics = []
+  for args in bossvs_args:
+    print(f"Starting run: Breed BOSSVS with args {args}")
+    metrics = run_bossvs(
+      dataset["train_samples_breed"],
+      dataset["train_labels_breed"],
+      dataset["test_samples_breed"],
+      dataset["test_labels_breed"],
+      args
+    )
+    boss_breed_metrics.append({
+      "metrics": metrics,
+      "hyper_params": args
+    })
   
   return {
     "knn_species_metrics": knn_species_metrics,
