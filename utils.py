@@ -6,11 +6,67 @@ import time
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 from pyts.classification import KNeighborsClassifier, BOSSVS
 
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix, accuracy_score, roc_curve, auc
+
+def get_hyperparams(metrics, model, label):
+    hps = []
+    for m in metrics[f"{model}_{label}_metrics"]:
+        hp = m["hyper_params"] if "hyper_params" in m else None
+        hps.append(hp)
+    return hps
+
+def get_metric(metrics, model, label, metric):
+    mtrcs = []
+    for m in metrics[f"{model}_{label}_metrics"]:
+        try:
+            mtrc = m["metrics"][metric]
+        except Exception as e:
+            mtrc = None
+        mtrcs.append(mtrc)
+    return mtrcs
+
+def create_accuracy_plot(metrics, model, label, hp_labels, rand_accuracy, title):
+    rand_accs = [rand_accuracy]*len(metrics)
+    labels = [f"a{i+1}" for i in range(0, len(metrics))]
+    labels = ["rand", *labels]
+    accs = [get_metric(m, model, label, "test_accuracy") for m in metrics]
+    plt.plot(rand_accs, linestyle='dashed')
+    for a in accs:
+        plt.plot(a)
+    plt.xticks(np.arange(len(hp_labels)), hp_labels, fontsize=12)
+    plt.legend(labels)
+    plt.title(title)
+    plt.show()
+
+def create_roc_plot(metrics, model, title, best_idxs):
+    roc_fps_s = []
+    roc_tps_s = []
+    aucs_s = []
+    rand_x = [0, 1.0]
+    rand_y = [0, 1.0]
+    for i in range(len(metrics)):
+        roc_fp_s = get_metric(metrics[i], model, "species", "roc_false_pos_rate")[best_idxs[i]]
+        roc_tp_s = get_metric(metrics[i], model, "species", "roc_true_pos_rate")[best_idxs[i]]
+        auc_s = get_metric(metrics[i], model, "species", "roc_auc")[best_idxs[i]]
+        roc_fps_s.append(roc_fp_s)
+        roc_tps_s.append(roc_tp_s)
+        aucs_s.append(auc_s)
+    labels = [f"a{i+1} - auc: {aucs_s[i]:.2f}" for i in range(0, len(metrics))]
+    labels = ["rand - auc: 0.5", *labels]
+    plt.plot(rand_x, rand_y, linestyle='dashed')
+    for i in range(len(roc_fps_s)):
+        roc_fp = roc_fps_s[i]
+        roc_tp = roc_tps_s[i]
+        auc = aucs_s[i]
+        plt.plot(roc_fp, roc_tp)
+    plt.legend(labels)
+    plt.title(title)
+    plt.show()
 
 def load_samples_into_ram(sample_names, data_dir, data_size):
   # TRICKY: Preallocate based on how much we will need. Makes memory usage and performance better    
