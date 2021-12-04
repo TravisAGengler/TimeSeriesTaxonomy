@@ -14,18 +14,18 @@ Running yourself
 
 2. Preprocess data
   ./data.py -c preprocess -i data/original_data -o data/preprocessed
-  This will preprocess all data an place the results in preprocessed
+  This will preprocess all data and place the results in preprocessed
 
 3. Run Approach 1 on preprocessed data
   ./data.py -c a1 -i data/preprocessed -o data/a1
-  This will process all data an place the results in a1
+  This will process all data and place the results in a1
 
 4. Run Approach 2 on preprocesed data
   ./data.py -c a2 -i data/preprocessed -o data/a2
-  This will process all data an place the results in a2
+  This will process all data and place the results in a2
 
 5. Run Approach 3 on preprocessed data
   ./data.py -c a3 -i data/preprocessed -o data/a3
-  This will process all data an place the results in a3
+  This will process all data and place the results in a3
 
 From this point, you should be able to run the notebook and produce results
